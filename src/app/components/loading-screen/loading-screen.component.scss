@@ -1,0 +1,35 @@
+.bg-gradient {
+    background: linear-gradient(180deg, #ff004c 0%, color-mix(in srgb, #ff004c 80%, black) 100%)
+}
+
+.spinner {
+    width: 50px;
+    aspect-ratio: 1;
+    display: grid;
+    -webkit-mask: conic-gradient(from 22deg, #0003, #000);
+    mask: conic-gradient(from 22deg, #0003, #000);
+    animation: spin 0.75s steps(8) infinite;
+}
+
+.spinner,
+.spinner:before {
+    --gradient: linear-gradient(#FACC15 0 0) 50%;
+    background:
+        var(--gradient)/34% 6% space no-repeat,
+        var(--gradient)/6% 34% no-repeat space;
+}
+
+.spinner:before {
+    content: "";
+    transform: rotate(45deg);
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0turn)
+    }
+
+    to {
+        transform: rotate(1turn)
+    }
+}

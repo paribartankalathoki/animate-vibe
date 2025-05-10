@@ -1,0 +1,17 @@
+@if (showSplash()) {
+<app-loading-screen></app-loading-screen>
+}
+@if (showErrorPopup()) {
+<app-error-popup [message]="errorMessage()" (retry)="getAppDataDetails()">
+</app-error-popup>
+}
+@if (!showSplash() && !showErrorPopup()) {
+@if (activeView() === 'landing') {
+<app-landing-page (countdownFinished)="switchView()" [headerText]="data.header" [headerAnimated]="data.headerAnimated"
+  [headerImage]="data.headerImage">
+</app-landing-page>
+} @else if (activeView() === 'chat') {
+<app-chat-demo (countdownFinished)="switchView()" [questions]="data.questions">
+</app-chat-demo>
+}
+}

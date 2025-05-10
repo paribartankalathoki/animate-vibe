@@ -1,0 +1,78 @@
+.wrapper {
+  background: linear-gradient(180deg, #ff004c 0%, color-mix(in srgb, #ff004c 80%, black) 100%);
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce {
+
+  0%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+
+  40% {
+    transform: translateY(-6px);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease;
+}
+
+.animate-bounce-delay-0 {
+  animation: bounce 1.4s infinite ease-in-out;
+}
+
+.animate-bounce-delay-200 {
+  animation: bounce 1.4s infinite ease-in-out 0.2s;
+}
+
+.animate-bounce-delay-400 {
+  animation: bounce 1.4s infinite ease-in-out 0.4s;
+}
+
+.messages-container {
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  padding-bottom: 20px;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+  /* For smooth scrolling on iOS */
+}
+
+.messages-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.messages-container::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+.countdown-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px;
+  z-index: 10;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), transparent);
+}
+
+@media (max-width: 767px) {
+  .messages-container {
+    max-height: calc(100vh - 100px);
+  }
+}
