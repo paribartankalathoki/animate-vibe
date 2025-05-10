@@ -24,6 +24,7 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   @Input() headerAnimated: string[] = [];
   @Input() headerImage: string = '';
   @Output() countdownFinished = new EventEmitter<void>();
+  @Output() landingPageClicked = new EventEmitter<any>(false);
   typedOutput = signal<string>('');
   showCountdown = signal<boolean>(false);
   private typeSpeed = 150;
@@ -84,7 +85,7 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   }
 
   onClick(): void {
-    this.router.navigate(['/chat']);
+    this.landingPageClicked.emit(true);
   }
 
   private clearTimers(): void {

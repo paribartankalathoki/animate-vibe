@@ -58,6 +58,10 @@ export class ViewControllerComponent implements OnInit {
     );
   }
 
+  isLandingPageClicked() {
+    this.activeView.update(() => 'chat');
+  }
+
   getAppDataDetails(): void {
     this.showSplash.set(true);
     this.showErrorPopup.set(false);

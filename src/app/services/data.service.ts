@@ -11,7 +11,7 @@ import {environment} from '../../environments/environment';
 export class DataService {
   apiUrl = `${environment.baseApiUrl}/kiosk`;
 
-  private timeoutDuration = 10000;
+  private timeoutDuration = 15000;
 
   constructor(private http: HttpClient) {
   }

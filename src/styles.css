@@ -78,3 +78,8 @@ html {
     font-weight: 400 700;
     font-style: normal;
 }
+
+
+.bg-gradient {
+  background: linear-gradient(180deg, #ff004c 0%, color-mix(in srgb, #ff004c 80%, black) 100%)
+}

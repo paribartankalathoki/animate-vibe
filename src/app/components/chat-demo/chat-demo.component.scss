@@ -1,5 +1,5 @@
 .wrapper {
-  background: linear-gradient(180deg, #ff004c 0%, color-mix(in srgb, #ff004c 80%, black) 100%);
+  min-height: 100vh;
 }
 
 @keyframes fade-in {
@@ -7,28 +7,23 @@
     opacity: 0;
     transform: translateY(10px);
   }
-
   100% {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-@keyframes bounce {
+.animate-fade-in {
+  animation: fade-in 0.3s ease;
+}
 
-  0%,
-  80%,
-  100% {
+@keyframes bounce {
+  0%, 80%, 100% {
     transform: translateY(0);
   }
-
   40% {
     transform: translateY(-6px);
   }
-}
-
-.animate-fade-in {
-  animation: fade-in 0.3s ease;
 }
 
 .animate-bounce-delay-0 {
@@ -44,16 +39,16 @@
 }
 
 .messages-container {
-  max-height: calc(100vh - 120px);
   overflow-y: auto;
   padding-bottom: 20px;
-  scrollbar-width: thin;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   -webkit-overflow-scrolling: touch;
-  /* For smooth scrolling on iOS */
+  flex-grow: 1;
 }
 
 .messages-container::-webkit-scrollbar {
-  width: 6px;
+  display: none;
 }
 
 .messages-container::-webkit-scrollbar-thumb {
@@ -61,14 +56,20 @@
   border-radius: 4px;
 }
 
-.countdown-container {
-  position: fixed;
+.user-bubble {
+  position: relative;
+}
+
+.user-bubble::after {
+  content: "";
+  position: absolute;
   bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 10px;
-  z-index: 10;
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), transparent);
+  right: -5px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid white;
 }
 
 @media (max-width: 767px) {

@@ -1,46 +1,51 @@
-<div (click)="onClick()" class="wrapper w-full h-full">
-  <div class="flex flex-col h-screen w-[780px] mx-auto">
-    <div class="container mx-auto mt-5">
-      <div class="flex flex-col p-5 messages-container">
-        @for (message of displayedMessages; track message) {
-          <div [ngClass]="['flex mb-4', message.sender === 'user' ? 'justify-end' : 'justify-start']">
-            <div [ngClass]="[
-                  'max-w-[95%] relative',
-                  message.isTyping ? 'typing' : '',
-                  message.sender === 'user' ? 'animate-fade-in' : 'animate-fade-in'
-                ]">
-              @if (message.sender === 'ai') {
-                <div class="absolute top-1 left-3.5 h-4 w-4">
-                  <img class="h-full w-full" src="chat-bubble.png" alt="">
-                </div>
-              }
-              <div [ngClass]="[
-                    'px-4 py-3 mt-5 rounded-lg text-justify leading-relaxed',
-                    message.sender === 'user'
-                      ? 'bg-white text-gray-800 px-5 py-4'
-                      : 'bg-transparent text-[#ffe747]'
-                  ]">
-                @if (!message.isTyping) {
-                  <span class="text-justify" [innerHTML]="message.text"></span>
-                }
-                @if (message.isTyping) {
-                  <span class="flex items-center mt-2.5">
-                                <span class="w-2 h-2 rounded-full bg-yellow-300 mx-0.5 animate-bounce-delay-0"></span>
-                                <span class="w-2 h-2 rounded-full bg-yellow-300 mx-0.5 animate-bounce-delay-200"></span>
-                                <span class="w-2 h-2 rounded-full bg-yellow-300 mx-0.5 animate-bounce-delay-400"></span>
-                            </span>
-                }
+<div (click)="onClick()" class="wrapper bg-gradient w-full">
+  <div class="flex flex-col h-screen max-w-[780px] w-full mx-auto">
+
+    <div class="flex flex-col p-5 messages-container">
+      @for (message of displayedMessages; track message) {
+        <div [ngClass]="['flex mb-4', message.sender === 'user' ? 'justify-end' : 'justify-start']">
+          <div [ngClass]="[
+                'max-w-[95%] relative',
+                message.isTyping ? 'typing' : '',
+                'animate-fade-in'
+              ]">
+
+            @if (message.sender === 'ai') {
+              <div class="absolute top-1 left-3.5 h-4 w-4">
+                <img class="h-full w-full" src="chat-bubble.png" alt="">
               </div>
+            }
+
+            <div [ngClass]="[
+                  'px-4 py-3 mt-5 rounded-md rounded-br-none text-justify leading-relaxed',
+                  message.sender === 'user'
+                    ? 'bg-white text-gray-800 px-5 py-4 user-bubble'
+                    : 'bg-transparent text-[#ffe747]'
+                ]">
+
+              @if (!message.isTyping) {
+                <span class="text-justify" [innerHTML]="message.text"></span>
+              }
+
+              @if (message.isTyping) {
+                <span class="flex items-center mt-2.5">
+                  <span class="w-2 h-2 rounded-full bg-yellow-300 mx-0.5 animate-bounce-delay-0"></span>
+                  <span class="w-2 h-2 rounded-full bg-yellow-300 mx-0.5 animate-bounce-delay-200"></span>
+                  <span class="w-2 h-2 rounded-full bg-yellow-300 mx-0.5 animate-bounce-delay-400"></span>
+                </span>
+              }
+
             </div>
           </div>
-        }
-      </div>
+        </div>
+      }
     </div>
+
     @if (showCountdown()) {
-      <div class="countdown-container">
-        <app-countdown-timer [initialValue]="10" (countdownFinished)="onCountdownFinished()">
-        </app-countdown-timer>
+      <div class="countdown-container p-4">
+        <app-countdown-timer [initialValue]="10" (countdownFinished)="onCountdownFinished()"></app-countdown-timer>
       </div>
     }
+
   </div>
 </div>
