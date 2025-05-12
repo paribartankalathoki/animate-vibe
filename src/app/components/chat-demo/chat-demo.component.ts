@@ -80,8 +80,6 @@ export class ChatDemoComponent implements OnInit {
             if (charIndex === 0) {
                 this.displayedMessages[this.currentTypingIndex()].isTyping = false;
             }
-
-            // Delay the next character with a signal-based approach
             this.delaySignal(20).then(() => {
                 this.typeMessage(fullText, charIndex + 1, callback);
             });
