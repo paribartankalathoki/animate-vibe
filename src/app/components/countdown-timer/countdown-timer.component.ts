@@ -1,20 +1,30 @@
-import { Component, computed, EventEmitter, Input, OnDestroy, OnInit, Output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 @Component({
   selector: 'app-countdown-timer',
   imports: [],
   templateUrl: './countdown-timer.component.html',
+  styleUrl: './countdown-timer.component.scss',
   standalone: true,
-  styleUrl: './countdown-timer.component.scss'
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
+
 export class CountdownTimerComponent implements OnInit, OnDestroy {
   @Input() initialValue: number = 10;
   @Output() countdownFinished = new EventEmitter<void>();
-
   private timeLeft = signal<number>(this.initialValue);
   countdown = computed(() => this.timeLeft());
   dashArray = computed(() => (this.timeLeft() / this.initialValue) * 100);
-
   private countdownTimer: number | undefined;
 
   ngOnInit(): void {

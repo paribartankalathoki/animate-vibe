@@ -1,16 +1,16 @@
-import { Component, EventEmitter, Input, OnInit, Output, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, inject, Input, OnInit, Output, signal } from '@angular/core';
+import {CommonModule, NgClass} from '@angular/common';
 import { Router } from '@angular/router';
 import { CountdownTimerComponent } from '../countdown-timer/countdown-timer.component';
-import {Question} from '../../core/interfaces/question';
-import {ChatMessage} from '../../core/interfaces/chat-message';
+import { Question } from '../../core/interfaces/question';
+import { ChatMessage } from '../../core/interfaces/chat-message';
 
 @Component({
   selector: 'app-chat-demo',
-  imports: [CommonModule, CountdownTimerComponent],
+  imports: [CountdownTimerComponent, NgClass],
   templateUrl: './chat-demo.component.html',
-  standalone: true,
-  styleUrls: ['./chat-demo.component.scss']
+  styleUrls: ['./chat-demo.component.scss'],
+  standalone: true
 })
 export class ChatDemoComponent implements OnInit {
   countdown: number = 10;
@@ -26,7 +26,7 @@ export class ChatDemoComponent implements OnInit {
   displayedMessages: ChatMessage[] = [];
   currentTypingIndex: number = -1;
 
-  constructor(private router: Router) { }
+  private router = inject(Router);
 
   ngOnInit(): void {
     if (this.questions && this.questions.length) {
@@ -51,14 +51,22 @@ export class ChatDemoComponent implements OnInit {
 
       if (message.sender === 'user') {
         this.displayedMessages.push({ ...message });
-        setTimeout(() => showNextMessage(index + 1), 800);
+
+        setTimeout(() => {
+          this.forceScrollUp();
+          setTimeout(() => showNextMessage(index + 1), 800);
+        }, 100);
       } else {
         this.displayedMessages.push({ sender: 'ai', text: '', isTyping: true });
         this.currentTypingIndex = this.displayedMessages.length - 1;
 
         setTimeout(() => {
+          this.forceScrollUp();
           this.typeMessage(message.text, 0, () => {
-            setTimeout(() => showNextMessage(index + 1), 1000);
+            setTimeout(() => {
+              this.forceScrollUp();
+              setTimeout(() => showNextMessage(index + 1), 1000);
+            }, 100);
           });
         }, 1000);
       }
@@ -80,6 +88,14 @@ export class ChatDemoComponent implements OnInit {
       }, 20);
     } else {
       callback();
+    }
+  }
+
+
+  forceScrollUp(): void {
+    const messagesContainer = document.querySelector('.messages-container');
+    if (messagesContainer) {
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
   }
 

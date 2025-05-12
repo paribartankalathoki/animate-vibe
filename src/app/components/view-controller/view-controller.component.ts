@@ -1,6 +1,5 @@
-import { Component, OnInit, signal } from '@angular/core';
+import {Component, inject, OnDestroy, OnInit, signal} from '@angular/core';
 import { LandingPageComponent } from '../landing-page/landing-page.component';
-import { CommonModule } from '@angular/common';
 import { AppDataResponse } from '../../core/interfaces/app-data-response';
 import { DataService } from '../../services/data.service';
 import { ErrorPopupComponent } from '../error-popup/error-popup.component';
@@ -15,7 +14,6 @@ type ViewType = 'landing' | 'chat';
   standalone: true,
   imports: [
     LandingPageComponent,
-    CommonModule,
     ErrorPopupComponent,
     ChatDemoComponent,
     LoadingScreenComponent
@@ -23,7 +21,7 @@ type ViewType = 'landing' | 'chat';
   templateUrl: './view-controller.component.html',
   styleUrls: ['./view-controller.component.scss']
 })
-export class ViewControllerComponent implements OnInit {
+export class ViewControllerComponent implements OnInit, OnDestroy {
   data: AppDataResponse = new AppDataResponseImpl();
   activeView = signal<ViewType>('landing');
 
@@ -34,12 +32,10 @@ export class ViewControllerComponent implements OnInit {
 
   private errorTimeoutId: any;
   private minDisplayTimeoutId: any;
-  private minDisplayTime = 3000;
+  private minDisplayTime = 1000;
   private errorTimeout = 12000;
-
   private loadStartTime: number = 0;
-
-  constructor(private dataService: DataService) { }
+  private dataService = inject(DataService)
 
   ngOnInit(): void {
     this.loadStartTime = Date.now();

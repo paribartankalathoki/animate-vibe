@@ -1,12 +1,12 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-error-popup',
-  standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './error-popup.component.html',
-  styleUrls: ['./error-popup.component.scss'] // Optional, can be empty or omitted
+  styleUrls: ['./error-popup.component.scss'],
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ErrorPopupComponent {
   @Input() message: string = 'An error occurred.';

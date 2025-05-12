@@ -1,23 +1,23 @@
-import {CommonModule} from "@angular/common";
 import {
   Component,
   EventEmitter,
-  inject,
   Input,
   OnDestroy,
   OnInit,
   Output,
   signal,
+  ChangeDetectionStrategy
 } from "@angular/core";
-import {Router, RouterModule} from "@angular/router";
-import {CountdownTimerComponent} from "../countdown-timer/countdown-timer.component";
+import { RouterModule } from "@angular/router";
+import { CountdownTimerComponent } from "../countdown-timer/countdown-timer.component";
 
 @Component({
   selector: 'app-landing-page',
   templateUrl: './landing-page.component.html',
   styleUrls: ['./landing-page.component.scss'],
-  standalone: true,
-  imports: [CommonModule, RouterModule, CountdownTimerComponent]
+  imports: [RouterModule, CountdownTimerComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true
 })
 export class LandingPageComponent implements OnInit, OnDestroy {
   @Input() headerText: string = '';
@@ -34,8 +34,6 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   private totalTypedPhrases = 0;
   private typingTimer: number | undefined;
   private erasingTimer: number | undefined;
-  private router = inject(Router);
-
 
   ngOnInit(): void {
     this.startTypingEraseLoop();
