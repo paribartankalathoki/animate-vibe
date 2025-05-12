@@ -8,8 +8,8 @@ import {
   signal,
   ChangeDetectionStrategy
 } from "@angular/core";
-import { RouterModule } from "@angular/router";
-import { CountdownTimerComponent } from "../countdown-timer/countdown-timer.component";
+import {RouterModule} from "@angular/router";
+import {CountdownTimerComponent} from "../countdown-timer/countdown-timer.component";
 
 @Component({
   selector: 'app-landing-page',
@@ -27,51 +27,53 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   @Output() landingPageClicked = new EventEmitter<any>(false);
   typedOutput = signal<string>('');
   showCountdown = signal<boolean>(false);
+  isTyping = signal<boolean>(true);
+  phraseIndex = signal<number>(0);
+  totalTypedPhrases = signal<number>(0);
+
   private typeSpeed = 150;
   private eraseSpeed = 75;
-  private phraseIndex = 0;
-  private isTyping = true;
-  private totalTypedPhrases = 0;
-  private typingTimer: number | undefined;
-  private erasingTimer: number | undefined;
+
+  private typingTimeout: any;
+  private erasingTimeout: any;
 
   ngOnInit(): void {
     this.startTypingEraseLoop();
   }
 
   startTypingEraseLoop(): void {
-    this.clearTimers();
-    this.typingTimer = window.setInterval(() => {
-      const currentPhrase = this.headerAnimated[this.phraseIndex];
+    const currentPhrase = this.headerAnimated[this.phraseIndex()];
 
-      if (this.isTyping) {
+    if (this.isTyping()) {
+      this.typingTimeout = setTimeout(() => {
         if (this.typedOutput().length < currentPhrase.length) {
           this.typedOutput.set(this.typedOutput() + currentPhrase[this.typedOutput().length]);
+          this.startTypingEraseLoop();
         } else {
-          this.isTyping = false;
+          this.isTyping.set(false);
           this.startEraseLoop();
         }
-      }
-    }, this.typeSpeed);
+      }, this.typeSpeed);
+    }
   }
 
   startEraseLoop(): void {
-    this.clearTimers();
-    this.erasingTimer = window.setInterval(() => {
-      if (this.typedOutput().length > 0) {
-        this.typedOutput.set(this.typedOutput().slice(0, -1));
-      } else {
-        this.totalTypedPhrases++;
-
-        if (this.totalTypedPhrases === this.headerAnimated.length) {
-          this.showCountdown.set(true);
+    if (!this.isTyping()) {
+      this.erasingTimeout = setTimeout(() => {
+        if (this.typedOutput().length > 0) {
+          this.typedOutput.set(this.typedOutput().slice(0, -1));
+          this.startEraseLoop();
+        } else {
+          this.totalTypedPhrases.update((val) => val + 1);
+          if (this.totalTypedPhrases() === this.headerAnimated.length) {
+            this.showCountdown.set(true);
+          }
+          this.phraseIndex.set((this.phraseIndex() + 1) % this.headerAnimated.length);
+          this.isTyping.set(true);
+          this.startTypingEraseLoop();
         }
-
-        this.phraseIndex = (this.phraseIndex + 1) % this.headerAnimated.length;
-        this.isTyping = true;
-        this.startTypingEraseLoop();
-      }
-    }, this.eraseSpeed);
+      }, this.eraseSpeed);
+    }
   }
 
   onCountdownFinished(): void {
@@ -87,14 +89,14 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   }
 
   private clearTimers(): void {
-    if (this.typingTimer) {
-      window.clearInterval(this.typingTimer);
-      this.typingTimer = undefined;
+    if (this.typingTimeout) {
+      clearTimeout(this.typingTimeout);
+      this.typingTimeout = undefined;
     }
 
-    if (this.erasingTimer) {
-      window.clearInterval(this.erasingTimer);
-      this.erasingTimer = undefined;
+    if (this.erasingTimeout) {
+      clearTimeout(this.erasingTimeout);
+      this.erasingTimeout = undefined;
     }
   }
 }
