@@ -1,49 +1,49 @@
 @keyframes blink {
 
-    0%,
-    100% {
-        opacity: 1;
-    }
+  0%,
+  100% {
+    opacity: 1;
+  }
 
-    50% {
-        opacity: 0;
-    }
+  50% {
+    opacity: 0;
+  }
 }
 
 @keyframes pulse {
-    0% {
-        transform: scale(1);
-        opacity: 0.85;
-    }
+  0% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
 
-    50% {
-        transform: scale(1.1);
-        opacity: 1;
-    }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
 
-    100% {
-        transform: scale(1);
-        opacity: 0.85;
-    }
+  100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
 }
 
 .cursor {
-    animation: blink 1s infinite;
+  animation: blink 1s infinite;
 }
 
 .illustration {
-    animation: pulse 3s ease-in-out infinite;
+  animation: pulse 3s ease-in-out infinite;
 }
 
 .pulse {
-    animation: pulse 1.5s infinite;
+  animation: pulse 1.5s infinite;
 }
 
 h1,
 button {
-    filter: drop-shadow(0 0 5px rgba(255, 255, 0, 0.3));
+  filter: drop-shadow(0 0 5px rgba(255, 255, 0, 0.3));
 }
 
-h1{
-    line-height: 1;
+h1 {
+  line-height: 1;
 }
