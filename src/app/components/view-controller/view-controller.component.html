@@ -15,7 +15,7 @@
       [headerImage]="data.headerImage">
     </app-landing-page>
   } @else if (activeView() === 'chat') {
-    <app-chat-demo (countdownFinished)="switchView()" [questions]="data.questions">
-    </app-chat-demo>
+    <app-active-chat (countdownFinished)="switchView()" [questions]="data.questions">
+    </app-active-chat>
   }
 }
