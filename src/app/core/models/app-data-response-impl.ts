@@ -1,13 +1,13 @@
-import {AppDataResponse} from '../interfaces/app-data-response';
-import {Question} from '../interfaces/question';
+import { AppDataResponse } from '../interfaces/app-data-response';
+import { Question } from '../interfaces/question';
 
 export class AppDataResponseImpl implements AppDataResponse {
-  id: string = '';
-  assistantId: string = '';
-  header: string = '';
+  id = '';
+  assistantId = '';
+  header = '';
   headerAnimated: string[] = [];
-  headerImage: string = '';
+  headerImage = '';
   questions: Question[] = [];
-  createdAt: string = '';
-  updatedAt: string = '';
+  createdAt = '';
+  updatedAt = '';
 }

@@ -1,21 +1,17 @@
 @if (showSplash()) {
-  <app-loading-screen></app-loading-screen>
-}
-@if (showErrorPopup()) {
-  <app-error-popup [message]="errorMessage()" (retry)="getAppDataDetails()">
-  </app-error-popup>
-}
-@if (!showSplash() && !showErrorPopup()) {
+  <app-loading-screen />
+} @else if (showErrorPopup()) {
+  <app-error-popup [message]="errorMessage()" (retry)="getAppDataDetails()" />
+} @else {
+  @let _data = data();
   @if (activeView() === 'landing') {
     <app-landing-page
+      [headerText]="_data.header"
+      [headerAnimated]="_data.headerAnimated"
+      [headerImage]="_data.headerImage"
       (countdownFinished)="switchView()"
-      (landingPageClicked)="isLandingPageClicked()"
-      [headerText]="data.header"
-      [headerAnimated]="data.headerAnimated"
-      [headerImage]="data.headerImage">
-    </app-landing-page>
+      (landingPageClicked)="isLandingPageClicked()" />
   } @else if (activeView() === 'chat') {
-    <app-active-chat (countdownFinished)="switchView()" [questions]="data.questions">
-    </app-active-chat>
+    <app-active-chat [questions]="_data.questions" (countdownFinished)="switchView()" />
   }
 }

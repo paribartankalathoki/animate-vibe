@@ -1,13 +1,6 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-  OnInit,
-  signal,
-} from '@angular/core';
-import {Question} from '../../core/interfaces/question';
-import {CountdownTimerComponent} from '../countdown-timer/countdown-timer.component';
+import { Component, OnInit, signal, input, output } from '@angular/core';
+import type { Question } from '../../core/interfaces/question';
+import { CountdownTimerComponent } from '../countdown-timer/countdown-timer.component';
 
 @Component({
   selector: 'app-active-chat',
@@ -17,57 +10,45 @@ import {CountdownTimerComponent} from '../countdown-timer/countdown-timer.compon
   standalone: true
 })
 export class ActiveChatComponent implements OnInit {
-  @Output() countdownFinished = new EventEmitter<void>();
+  public readonly questions = input.required<Question[]>();
+  public readonly countdownFinished = output<void>();
+
+  public readonly shownQuestions = signal<Question[]>([]);
 
   countdown = signal<number>(10);
   showCountdown = signal<boolean>(false);
-  visibleMessages = signal<number[]>([]);
-  currentTypedAnswers = signal<string[]>([]);
-  typingSpeed = 30;
-
-  private _questions = signal<Question[]>([]);
-
-  get questions() {
-    return this._questions();
-  }
-
-  @Input() set questions(value: Question[]) {
-    this._questions.set(value);
-  }
+  private readonly typingSpeed = 30;
 
   ngOnInit(): void {
     this.revealMessages();
   }
 
   async revealMessages() {
-    const questions = this.questions;
+    const _questions = this.questions();
 
-    for (let i = 0; i < questions.length; i++) {
-      this.visibleMessages.update(messages => [...messages, i]);
-
-      this.currentTypedAnswers.update(answers => {
-        const newAnswers = [...answers];
-        newAnswers[i] = '';
-        return newAnswers;
+    for (const { answer, question } of _questions) {
+      this.shownQuestions.update(questions => {
+        const newQuestions = [...questions];
+        newQuestions.push({ question, answer: '' });
+        return newQuestions;
       });
 
       await this.delay(400);
-      await this.typeAnswer(i, questions[i].answer);
+      await this.typeAnswer(answer);
       await this.delay(300);
 
-      const nextId = `user-${i + 1}`;
-      this.scrollToMessage(nextId);
+      this.scrollToMessage();
     }
 
     await this.startCountdown();
   }
 
-  async typeAnswer(index: number, fullText: string) {
+  async typeAnswer(fullText: string) {
     for (let i = 1; i <= fullText.length; i++) {
-      this.currentTypedAnswers.update(answers => {
-        const newAnswers = [...answers];
-        newAnswers[index] = fullText.slice(0, i);
-        return newAnswers;
+      this.shownQuestions.update(questions => {
+        const newQuestions = [...questions];
+        newQuestions[newQuestions.length - 1].answer = fullText.slice(0, i);
+        return newQuestions;
       });
 
       await this.delay(this.typingSpeed);
@@ -88,15 +69,12 @@ export class ActiveChatComponent implements OnInit {
     });
   }
 
-  isVisible(index: number): boolean {
-    return this.visibleMessages().includes(index);
-  }
-
-  scrollToMessage(id: string) {
+  scrollToMessage() {
     requestAnimationFrame(() => {
-      const el = document.getElementById(id);
-      if (el) {
-        el.scrollIntoView({behavior: 'smooth', block: 'start'});
+      const els = document.querySelectorAll('.question');
+      const lastQuestion = els[els.length - 1];
+      if (lastQuestion) {
+        lastQuestion.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     });
   }

@@ -1,81 +1,58 @@
 import {
   Component,
-  EventEmitter,
-  Input,
   OnDestroy,
-  OnInit,
-  Output,
   signal,
-  ChangeDetectionStrategy
-} from "@angular/core";
-import {RouterModule} from "@angular/router";
-import {CountdownTimerComponent} from "../countdown-timer/countdown-timer.component";
+  output,
+  input,
+  ChangeDetectionStrategy,
+  effect,
+} from '@angular/core';
+import { CountdownTimerComponent } from '../countdown-timer/countdown-timer.component';
 
 @Component({
   selector: 'app-landing-page',
   templateUrl: './landing-page.component.html',
   styleUrls: ['./landing-page.component.scss'],
-  imports: [RouterModule, CountdownTimerComponent],
+  imports: [CountdownTimerComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true
 })
-export class LandingPageComponent implements OnInit, OnDestroy {
-  @Output() countdownFinished = new EventEmitter<void>();
-  @Output() landingPageClicked = new EventEmitter<any>();
-  typedOutput = signal<string>('');
-  showCountdown = signal<boolean>(false);
-  private typeSpeed = 150;
-  private eraseSpeed = 75;
+export class LandingPageComponent implements OnDestroy {
+  public readonly headerText = input.required<string>();
+  public readonly headerImage = input.required<string>();
+  public readonly headerAnimated = input.required<string[]>();
+
+  public readonly landingPageClicked = output<boolean>();
+  public readonly countdownFinished = output<void>();
+
+  public readonly typedOutput = signal('');
+  public readonly showCountdown = signal(false);
+
+  private readonly typeSpeed = 150;
+  private readonly eraseSpeed = 75;
   private phraseIndex = 0;
   private isTyping = true;
   private totalTypedPhrases = 0;
   private typingTimer: number | undefined;
   private erasingTimer: number | undefined;
 
-  private _headerText = signal<string>('');
-
-  get headerText() {
-    return this._headerText();
-  }
-
-  @Input() set headerText(value: string) {
-    this._headerText.set(value);
-  }
-
-  private _headerAnimated = signal<string[]>([]);
-
-  get headerAnimated() {
-    return this._headerAnimated();
-  }
-
-  @Input() set headerAnimated(value: string[]) {
-    this._headerAnimated.set(value);
-  }
-
-  private _headerImage = signal<string>('');
-
-  get headerImage() {
-    return this._headerImage();
-  }
-
-  @Input() set headerImage(value: string) {
-    this._headerImage.set(value);
-  }
-
-  ngOnInit(): void {
-    this.startTypingEraseLoop();
+  constructor() {
+    effect(() => {
+      if (this.headerAnimated()?.length) {
+        this.startTypingEraseLoop();
+      }
+    });
   }
 
   startTypingEraseLoop(): void {
     this.clearTimers();
     this.typingTimer = window.setInterval(() => {
-      const currentPhrase = this.headerAnimated[this.phraseIndex];
+      const currentPhrase = this.headerAnimated()?.[this.phraseIndex];
 
       if (this.isTyping) {
-        if (this.typedOutput().length < currentPhrase.length) {
-          this.typedOutput.set(
-            this.typedOutput() + currentPhrase[this.typedOutput().length]
-          );
+        const typedOutput = this.typedOutput();
+        if (typedOutput?.length < currentPhrase?.length) {
+          this.typedOutput.set(typedOutput + currentPhrase[typedOutput.length]);
         } else {
           this.isTyping = false;
           this.startEraseLoop();
@@ -87,16 +64,18 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   startEraseLoop(): void {
     this.clearTimers();
     this.erasingTimer = window.setInterval(() => {
-      if (this.typedOutput().length > 0) {
-        this.typedOutput.set(this.typedOutput().slice(0, -1));
+      const typedOutput = this.typedOutput();
+      if (typedOutput?.length) {
+        this.typedOutput.set(typedOutput.slice(0, -1));
       } else {
         this.totalTypedPhrases++;
+        const animatedPhrases = this.headerAnimated();
 
-        if (this.totalTypedPhrases === this.headerAnimated.length) {
+        if (this.totalTypedPhrases === animatedPhrases?.length) {
           this.showCountdown.set(true);
         }
 
-        this.phraseIndex = (this.phraseIndex + 1) % this.headerAnimated.length;
+        this.phraseIndex = (this.phraseIndex + 1) % animatedPhrases?.length;
         this.isTyping = true;
         this.startTypingEraseLoop();
       }
@@ -126,5 +105,4 @@ export class LandingPageComponent implements OnInit, OnDestroy {
       this.erasingTimer = undefined;
     }
   }
-
 }

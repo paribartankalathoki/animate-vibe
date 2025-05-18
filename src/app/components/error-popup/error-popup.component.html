@@ -1,12 +1,15 @@
-<div class="fixed inset-0 z-50 flex items-center justify-center"
-     style="background: linear-gradient(180deg, #ff004c 0%, color-mix(in srgb, #ff004c 80%, black) 100%);">
+<div
+  class="fixed inset-0 z-50 flex items-center justify-center"
+  style="
+    background: linear-gradient(180deg, #ff004c 0%, color-mix(in srgb, #ff004c 80%, black) 100%);
+  ">
   <div class="text-center p-8 max-w-md">
     <h2 class="text-2xl font-bold text-yellow-400 mb-4">Connection Error</h2>
     <p class="text-white text-lg mb-8">{{ message }}</p>
-    <button routerLink="/"
-            class="rounded-lg bg-yellow-400 px-6 py-3 font-bold text-red-500 shadow-lg
-            transition-all duration-300 hover:-translate-y-1 hover:bg-yellow-300 cursor-pointer
-            hover:shadow-2xl hover:shadow-red-900/30 transform" (click)="onRetry()">
+    <button
+      routerLink="/"
+      class="rounded-lg bg-yellow-400 px-6 py-3 font-bold text-red-500 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:bg-yellow-300 cursor-pointer hover:shadow-2xl hover:shadow-red-900/30 transform"
+      (click)="onRetry()">
       Retry
     </button>
   </div>

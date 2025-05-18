@@ -6,7 +6,7 @@ import { RouterOutlet } from '@angular/router';
   imports: [RouterOutlet],
   templateUrl: './app.component.html',
   standalone: true,
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
   isAppLoaded = false;
@@ -16,5 +16,4 @@ export class AppComponent implements OnInit {
       this.isAppLoaded = true;
     }, 7000);
   }
-
 }

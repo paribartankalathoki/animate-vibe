@@ -16,15 +16,25 @@ import {
   template: `
     <div class="fixed bottom-5 right-5 w-10 h-10 z-[1000]">
       <svg class="w-full h-full" viewBox="0 0 36 36">
-        <path class="fill-none stroke-[rgba(0,0,0,0.6)]" stroke-width="4.5" d="M18 2.0845
+        <path
+          class="fill-none stroke-[rgba(0,0,0,0.6)]"
+          stroke-width="4.5"
+          d="M18 2.0845
            a 15.9155 15.9155 0 0 1 0 31.831
-           a 15.9155 15.9155 0 0 1 0 -31.831"/>
-        <path class="fill-none stroke-gray-100 transition-[stroke-dasharray] duration-1000 ease-linear"
-              stroke-width="4.5"
-              stroke-linecap="round" [attr.stroke-dasharray]="dashArray() + ', 100'" d="M18 2.0845
+           a 15.9155 15.9155 0 0 1 0 -31.831" />
+        <path
+          class="fill-none stroke-gray-100 transition-[stroke-dasharray] duration-1000 ease-linear"
+          stroke-width="4.5"
+          stroke-linecap="round"
+          [attr.stroke-dasharray]="dashArray() + ', 100'"
+          d="M18 2.0845
            a 15.9155 15.9155 0 0 1 0 31.831
-           a 15.9155 15.9155 0 0 1 0 -31.831"/>
-        <text x="18" y="22.35" class="fill-gray-100 text-[0.9rem] text-center font-[Poppins]" text-anchor="middle">
+           a 15.9155 15.9155 0 0 1 0 -31.831" />
+        <text
+          x="18"
+          y="22.35"
+          class="fill-gray-100 text-[0.9rem] text-center font-[Poppins]"
+          text-anchor="middle">
           {{ countdown() }}
         </text>
       </svg>
@@ -32,11 +42,10 @@ import {
   `,
   styles: ``,
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-
 export class CountdownTimerComponent implements OnInit, OnDestroy {
-  @Input() initialValue: number = 10;
+  @Input() initialValue = 10;
   @Output() countdownFinished = new EventEmitter<void>();
   private timeLeft = signal<number>(this.initialValue);
   countdown = computed(() => this.timeLeft());
@@ -69,5 +78,4 @@ export class CountdownTimerComponent implements OnInit, OnDestroy {
       this.countdownTimer = undefined;
     }
   }
-
 }

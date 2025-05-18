@@ -1,47 +1,34 @@
 <div class="h-screen w-screen overflow-auto bg-gradient">
   <div class="h-full bg-fixed">
-    <div class="mx-auto h-full min-h-full max-w-[780px] overflow-y-scroll scrollbar-none pt-8 pb-33 px-5">
-      @for (question of questions; track question; let i = $index) {
-        @if (isVisible(i)) {
-          <div class="flex justify-end mb-2.5 animate-fadeIn" [id]="'user-' + i">
+    <div
+      class="mx-auto h-full min-h-full max-w-[780px] overflow-y-scroll scrollbar-none pt-8 pb-33 px-5">
+      @for (question of shownQuestions(); track question) {
+        <div class="question flex justify-end mb-2.5 animate-fadeIn">
+          <div
+            class="relative whitespace-pre-wrap break-words bg-white rounded-t-[5px] rounded-bl-[5px] max-w-[80%] md:max-w-[70%] px-[13px] py-[9px] md:px-[19px] md:py-[18px] text-sm md:text-base leading-relaxed">
+            {{ question.question }}
             <div
-              class="relative whitespace-pre-wrap break-words bg-white rounded-t-[5px] rounded-bl-[5px]
-              max-w-[80%] md:max-w-[70%] px-[13px] py-[9px] md:px-[19px] md:py-[18px] text-sm md:text-base
-              leading-relaxed"
-            >
-              {{ question.question }}
+              class="absolute bottom-0 right-[-2px] h-0 w-0 border-l border-b-2 border-r border-t border-l-white border-b-white border-r-transparent border-t-transparent rounded-bl-[1px]"></div>
+          </div>
+        </div>
+        <div class="text-[#ffe747] py-4 mb-3 last:min-h-[calc(100%-80px)] last:mb-0">
+          <div class="flex items-end gap-1.5 mb-3">
+            <span class="w-4 h-4 bg-[#ffe747] rounded-t-[6.15px] rounded-bl-[6.15px] relative">
               <div
-                class="absolute bottom-0 right-[-2px] h-0 w-0 border-l border-b-2 border-r border-t
-                border-l-white border-b-white border-r-transparent border-t-transparent
-                rounded-bl-[1px]"
-              ></div>
-            </div>
+                class="absolute bottom-0 right-[-1px] h-0 w-0 border-l border-b-2 border-r border-t border-l-[#ffe747] border-b-[#ffe747] border-r-transparent border-t-transparent rounded-bl-[1px]"></div>
+            </span>
           </div>
-          <div class="text-[#ffe747] py-4 mb-3 last:min-h-[calc(100%-80px)] last:mb-0" [id]="'assistant-' + i">
-            <div class="flex items-end gap-1.5 mb-3">
-              <span class="w-4 h-4 bg-[#ffe747] rounded-t-[6.15px] rounded-bl-[6.15px] relative">
-                <div
-                  class="absolute bottom-0 right-[-1px] h-0 w-0 border-l border-b-2 border-r border-t
-                  border-l-[#ffe747] border-b-[#ffe747] border-r-transparent border-t-transparent
-                  rounded-bl-[1px]"
-                ></div>
-              </span>
-            </div>
-            <div class="leading-[26px] tracking-tight text-sm md:text-base">
-              <p>{{ currentTypedAnswers()[i] }}</p>
-            </div>
+          <div class="leading-[26px] tracking-tight text-sm md:text-base">
+            <p>{{ question.answer }}</p>
           </div>
-        }
+        </div>
       }
     </div>
   </div>
 
   @if (showCountdown()) {
     <div class="fixed bottom-0 left-0 right-0">
-      <app-countdown-timer
-        [initialValue]="10"
-        (countdownFinished)="onCountdownFinished()">
-      </app-countdown-timer>
+      <app-countdown-timer [initialValue]="10" (countdownFinished)="onCountdownFinished()" />
     </div>
   }
 </div>
