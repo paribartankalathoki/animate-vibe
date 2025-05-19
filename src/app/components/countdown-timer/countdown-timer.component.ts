@@ -30,11 +30,7 @@ import {
           d="M18 2.0845
            a 15.9155 15.9155 0 0 1 0 31.831
            a 15.9155 15.9155 0 0 1 0 -31.831" />
-        <text
-          x="18"
-          y="22.35"
-          class="fill-gray-100 text-[0.9rem] text-center font-[Poppins]"
-          text-anchor="middle">
+        <text x="18" y="22.35" class="fill-gray-100 text-[0.9rem] text-center" text-anchor="middle">
           {{ countdown() }}
         </text>
       </svg>

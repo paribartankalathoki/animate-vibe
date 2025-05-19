@@ -24,7 +24,9 @@
     </div>
 
     @if (showCountdown()) {
-      <app-countdown-timer [initialValue]="10" (countdownFinished)="onCountdownFinished()" />
+      <div class="fixed bottom-0 left-0 right-0">
+        <app-countdown-timer [initialValue]="10" (countdownFinished)="onCountdownFinished()" />
+      </div>
     }
   </div>
 </div>

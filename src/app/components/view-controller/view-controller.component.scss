@@ -13,10 +13,16 @@
   left: 0;
 }
 
-.animated-view {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
+.slide-in {
+  animation: slide-in-right 0.2s ease-out forwards;
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
 }

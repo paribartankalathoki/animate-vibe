@@ -1,24 +1,27 @@
 @if (showSplash()) {
-  <app-loading-screen />
-} @else if (showErrorPopup()) {
-  <app-error-popup [message]="errorMessage()" (retry)="getAppDataDetails()" />
-} @else {
-  @let _data = data();
-
-  <div class="view-wrapper" [@cardSlide]="activeView()">
-    @if (activeView() === 'landing') {
-      <div class="animated-view">
-        <app-landing-page
-          [headerText]="_data.header"
-          [headerAnimated]="_data.headerAnimated"
-          [headerImage]="_data.headerImage"
-          (countdownFinished)="switchView()"
-          (landingPageClicked)="isLandingPageClicked()" />
-      </div>
-    } @else if (activeView() === 'chat') {
-      <div class="animated-view">
-        <app-active-chat [questions]="_data.questions" (countdownFinished)="switchView()" />
-      </div>
-    }
+  <app-loading-screen></app-loading-screen>
+}
+@if (showErrorPopup()) {
+  <app-error-popup [message]="errorMessage()" (retry)="getAppDataDetails()"> </app-error-popup>
+}
+@if (!showSplash() && !showErrorPopup()) {
+  <div class="view-wrapper">
+    <div class="view-container" [ngClass]="{ 'slide-in z-10': activeView() === 'landing' }">
+      <app-landing-page
+        (countdownFinished)="switchView()"
+        (landingPageClicked)="isLandingPageClicked()"
+        [isActive]="activeView() === 'landing'"
+        [headerText]="data.header"
+        [headerAnimated]="data.headerAnimated"
+        [headerImage]="data.headerImage">
+      </app-landing-page>
+    </div>
+    <div class="view-container" [ngClass]="{ 'slide-in z-10': activeView() === 'chat' }">
+      <app-active-chat
+        (countdownFinished)="switchView()"
+        [isActive]="activeView() === 'chat'"
+        [questions]="data.questions">
+      </app-active-chat>
+    </div>
   </div>
 }

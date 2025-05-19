@@ -21,40 +21,70 @@ export class LandingPageComponent implements OnDestroy {
   public readonly headerText = input.required<string>();
   public readonly headerImage = input.required<string>();
   public readonly headerAnimated = input.required<string[]>();
-
   public readonly landingPageClicked = output<boolean>();
   public readonly countdownFinished = output<void>();
-
   public readonly typedOutput = signal('');
   public readonly showCountdown = signal(false);
-
+  isActive = input<boolean>(false);
   private readonly typeSpeed = 150;
   private readonly eraseSpeed = 75;
   private phraseIndex = 0;
-  private isTyping = true;
+  private isTyping = signal<boolean>(false);
   private totalTypedPhrases = 0;
   private typingTimer: number | undefined;
   private erasingTimer: number | undefined;
+  private isAnimating = false;
 
   constructor() {
     effect(() => {
-      if (this.headerAnimated()?.length) {
-        this.startTypingEraseLoop();
+      const active = this.isActive();
+      if (active) {
+        this.reset();
+        this.startAnimation();
+      } else {
+        this.clearTimers();
+        this.isAnimating = false;
       }
     });
   }
 
+  startAnimation(): void {
+    const phrases = this.headerAnimated();
+    if (phrases?.length && !this.isAnimating) {
+      this.isAnimating = true;
+      this.startTypingEraseLoop();
+    }
+  }
+
+  reset(): void {
+    this.clearTimers();
+    this.typedOutput.set('');
+    this.showCountdown.set(false);
+    this.phraseIndex = 0;
+    this.isTyping.update(() => true);
+    this.totalTypedPhrases = 0;
+    this.isAnimating = false;
+  }
+
   startTypingEraseLoop(): void {
     this.clearTimers();
+
+    if (!this.isActive() || !this.isAnimating) return;
+
     this.typingTimer = window.setInterval(() => {
+      if (!this.isActive() || !this.isAnimating) {
+        this.clearTimers();
+        return;
+      }
+
       const currentPhrase = this.headerAnimated()?.[this.phraseIndex];
 
-      if (this.isTyping) {
+      if (this.isTyping()) {
         const typedOutput = this.typedOutput();
         if (typedOutput?.length < currentPhrase?.length) {
           this.typedOutput.set(typedOutput + currentPhrase[typedOutput.length]);
         } else {
-          this.isTyping = false;
+          this.isTyping.update(() => false);
           this.startEraseLoop();
         }
       }
@@ -63,7 +93,15 @@ export class LandingPageComponent implements OnDestroy {
 
   startEraseLoop(): void {
     this.clearTimers();
+
+    if (!this.isActive() || !this.isAnimating) return;
+
     this.erasingTimer = window.setInterval(() => {
+      if (!this.isActive() || !this.isAnimating) {
+        this.clearTimers();
+        return;
+      }
+
       const typedOutput = this.typedOutput();
       if (typedOutput?.length) {
         this.typedOutput.set(typedOutput.slice(0, -1));
@@ -76,7 +114,7 @@ export class LandingPageComponent implements OnDestroy {
         }
 
         this.phraseIndex = (this.phraseIndex + 1) % animatedPhrases?.length;
-        this.isTyping = true;
+        this.isTyping.update(() => true);
         this.startTypingEraseLoop();
       }
     }, this.eraseSpeed);

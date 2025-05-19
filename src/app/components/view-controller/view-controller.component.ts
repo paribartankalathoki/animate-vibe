@@ -6,59 +6,37 @@ import { ErrorPopupComponent } from '../error-popup/error-popup.component';
 import { AppDataResponseImpl } from '../../core/models/app-data-response-impl';
 import { LoadingScreenComponent } from '../loading-screen/loading-screen.component';
 import { ActiveChatComponent } from '../active-chat/active-chat.component';
-import { animate, group, query, style, transition, trigger } from '@angular/animations';
-
-type ViewType = 'landing' | 'chat';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-view-controller',
-  imports: [LandingPageComponent, ErrorPopupComponent, LoadingScreenComponent, ActiveChatComponent],
+  imports: [
+    CommonModule,
+    LandingPageComponent,
+    ErrorPopupComponent,
+    LoadingScreenComponent,
+    ActiveChatComponent,
+  ],
   templateUrl: './view-controller.component.html',
   styleUrls: ['./view-controller.component.scss'],
-  animations: [
-    trigger('cardSlide', [
-      transition('* => *', [
-        query(':enter, :leave', style({ position: 'absolute', width: '100%', top: 0, left: 0 }), {
-          optional: true,
-        }),
-        group([
-          query(
-            ':leave',
-            [animate('500ms ease-in-out', style({ transform: 'translateX(-100%)' }))],
-            { optional: true }
-          ),
-          query(
-            ':enter',
-            [
-              style({ transform: 'translateX(100%)' }),
-              animate('500ms ease-in-out', style({ transform: 'translateX(0%)' })),
-            ],
-            { optional: true }
-          ),
-        ]),
-      ]),
-    ]),
-  ],
-
   standalone: true,
 })
 export class ViewControllerComponent implements OnInit, OnDestroy {
-  public readonly data = signal<AppDataResponse>(new AppDataResponseImpl());
-  public readonly activeView = signal<ViewType>('landing');
-
+  data: AppDataResponse = new AppDataResponseImpl();
+  activeView = signal<'landing' | 'chat'>('landing');
   isApiLoaded = signal<boolean>(false);
+  isAnimated = signal<boolean>(false);
   showSplash = signal<boolean>(true);
   showErrorPopup = signal<boolean>(false);
   errorMessage = signal<string>('');
 
-  private errorTimeoutId?: ReturnType<typeof setTimeout>;
-  private minDisplayTimeoutId?: ReturnType<typeof setTimeout>;
+  private errorTimeoutId: any;
+  private minDisplayTimeoutId: any;
   private minDisplayTime = 3000;
   private errorTimeout = 12000;
-  private loadStartTime = 0;
-  isAnimated = signal<boolean>(false);
-
+  private loadStartTime: number = 0;
   private dataService = inject(DataService);
+  private isTransitioning = false;
 
   ngOnInit(): void {
     this.loadStartTime = Date.now();
@@ -72,13 +50,27 @@ export class ViewControllerComponent implements OnInit, OnDestroy {
   }
 
   switchView(): void {
-    this.isAnimated.update(() => true);
-    this.activeView.update(currentView => (currentView === 'landing' ? 'chat' : 'landing'));
+    if (this.isTransitioning) return;
+
+    this.isTransitioning = true;
+    this.isAnimated.set(true);
+
+    setTimeout(() => {
+      this.activeView.update(currentView => (currentView === 'landing' ? 'chat' : 'landing'));
+      this.isTransitioning = false;
+    }, 100);
   }
 
   isLandingPageClicked() {
-    this.isAnimated.update(() => true);
-    this.activeView.update(() => 'chat');
+    if (this.isTransitioning) return;
+
+    this.isTransitioning = true;
+    this.isAnimated.set(true);
+
+    setTimeout(() => {
+      this.activeView.update(() => 'chat');
+      this.isTransitioning = false;
+    }, 100);
   }
 
   getAppDataDetails(): void {
@@ -106,12 +98,13 @@ export class ViewControllerComponent implements OnInit, OnDestroy {
     }, this.errorTimeout);
 
     this.dataService.getAppDataDetails().subscribe({
-      next: data => {
+      next: (data: AppDataResponse) => {
         clearTimeout(this.errorTimeoutId);
-        this.data.set(data);
+        this.data = data;
         this.isApiLoaded.set(true);
 
         const elapsedTime = Date.now() - this.loadStartTime;
+
         if (elapsedTime >= this.minDisplayTime) {
           this.showSplash.set(false);
         }
