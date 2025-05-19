@@ -4,14 +4,21 @@
   <app-error-popup [message]="errorMessage()" (retry)="getAppDataDetails()" />
 } @else {
   @let _data = data();
-  @if (activeView() === 'landing') {
-    <app-landing-page
-      [headerText]="_data.header"
-      [headerAnimated]="_data.headerAnimated"
-      [headerImage]="_data.headerImage"
-      (countdownFinished)="switchView()"
-      (landingPageClicked)="isLandingPageClicked()" />
-  } @else if (activeView() === 'chat') {
-    <app-active-chat [questions]="_data.questions" (countdownFinished)="switchView()" />
-  }
+
+  <div class="view-wrapper" [@cardSlide]="activeView()">
+    @if (activeView() === 'landing') {
+      <div class="animated-view">
+        <app-landing-page
+          [headerText]="_data.header"
+          [headerAnimated]="_data.headerAnimated"
+          [headerImage]="_data.headerImage"
+          (countdownFinished)="switchView()"
+          (landingPageClicked)="isLandingPageClicked()" />
+      </div>
+    } @else if (activeView() === 'chat') {
+      <div class="animated-view">
+        <app-active-chat [questions]="_data.questions" (countdownFinished)="switchView()" />
+      </div>
+    }
+  </div>
 }

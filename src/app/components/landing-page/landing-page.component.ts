@@ -15,7 +15,7 @@ import { CountdownTimerComponent } from '../countdown-timer/countdown-timer.comp
   styleUrls: ['./landing-page.component.scss'],
   imports: [CountdownTimerComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true
+  standalone: true,
 })
 export class LandingPageComponent implements OnDestroy {
   public readonly headerText = input.required<string>();

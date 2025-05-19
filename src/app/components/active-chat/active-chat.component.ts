@@ -7,7 +7,7 @@ import { CountdownTimerComponent } from '../countdown-timer/countdown-timer.comp
   templateUrl: './active-chat.component.html',
   styleUrls: ['./active-chat.component.scss'],
   imports: [CountdownTimerComponent],
-  standalone: true
+  standalone: true,
 })
 export class ActiveChatComponent implements OnInit {
   public readonly questions = input.required<Question[]>();

@@ -6,7 +6,7 @@ import { ErrorPopupComponent } from '../error-popup/error-popup.component';
 import { AppDataResponseImpl } from '../../core/models/app-data-response-impl';
 import { LoadingScreenComponent } from '../loading-screen/loading-screen.component';
 import { ActiveChatComponent } from '../active-chat/active-chat.component';
-import {animate, style, transition, trigger} from '@angular/animations';
+import { animate, group, query, style, transition, trigger } from '@angular/animations';
 
 type ViewType = 'landing' | 'chat';
 
@@ -16,18 +16,31 @@ type ViewType = 'landing' | 'chat';
   templateUrl: './view-controller.component.html',
   styleUrls: ['./view-controller.component.scss'],
   animations: [
-    trigger('slideInOut', [
-      transition('void => in', [
-        style({ transform: 'translateX(100%)', position: 'absolute', width: '100%' }),
-        animate('400ms ease-out', style({ transform: 'translateX(0%)' })),
-      ]),
-      transition('in => void', [
-        style({ transform: 'translateX(0%)', position: 'absolute', width: '100%' }),
-        animate('400ms ease-in', style({ transform: 'translateX(-100%)' })),
+    trigger('cardSlide', [
+      transition('* => *', [
+        query(':enter, :leave', style({ position: 'absolute', width: '100%', top: 0, left: 0 }), {
+          optional: true,
+        }),
+        group([
+          query(
+            ':leave',
+            [animate('500ms ease-in-out', style({ transform: 'translateX(-100%)' }))],
+            { optional: true }
+          ),
+          query(
+            ':enter',
+            [
+              style({ transform: 'translateX(100%)' }),
+              animate('500ms ease-in-out', style({ transform: 'translateX(0%)' })),
+            ],
+            { optional: true }
+          ),
+        ]),
       ]),
     ]),
   ],
-  standalone: true
+
+  standalone: true,
 })
 export class ViewControllerComponent implements OnInit, OnDestroy {
   public readonly data = signal<AppDataResponse>(new AppDataResponseImpl());
@@ -43,6 +56,8 @@ export class ViewControllerComponent implements OnInit, OnDestroy {
   private minDisplayTime = 3000;
   private errorTimeout = 12000;
   private loadStartTime = 0;
+  isAnimated = signal<boolean>(false);
+
   private dataService = inject(DataService);
 
   ngOnInit(): void {
@@ -57,10 +72,12 @@ export class ViewControllerComponent implements OnInit, OnDestroy {
   }
 
   switchView(): void {
+    this.isAnimated.update(() => true);
     this.activeView.update(currentView => (currentView === 'landing' ? 'chat' : 'landing'));
   }
 
   isLandingPageClicked() {
+    this.isAnimated.update(() => true);
     this.activeView.update(() => 'chat');
   }
 
